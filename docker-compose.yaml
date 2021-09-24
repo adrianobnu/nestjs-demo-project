@@ -1,0 +1,35 @@
+version: '3.8'
+services: 
+    web:
+        build:
+            context: .
+        container_name: nestjs_api
+        environment:
+            MONGODB_AUTH_STRING: 'mongodb://nestjs_mongodb:27017/nestjs'
+        volumes: 
+            - .:/app/
+        ports:
+            - 3000:3000
+        depends_on: 
+            - mongodb
+    mongodb:
+        container_name: nestjs_mongodb
+        image : mongo
+        environment:
+            PUID: 1000
+            PGID: 1000
+        volumes:
+            - mongodb-data:/data/db
+        ports:
+            - 27017:27017
+        restart: unless-stopped
+    mongoexpress:
+        container_name: nestjs_mongoexpress
+        image : mongo-express
+        environment:
+            ME_CONFIG_MONGODB_SERVER: nestjs_mongodb
+        ports:
+            - 8081:8081
+        restart: unless-stopped
+volumes:
+    mongodb-data:
